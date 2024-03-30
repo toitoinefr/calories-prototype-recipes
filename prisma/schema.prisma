@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id              Int               @id @default(autoincrement())
+  name            String
+  calories        Int
+  ProductInRecipe ProductInRecipe[]
+}
+
+model Recipe {
+  id            Int               @id @default(autoincrement())
+  name          String
+  products      ProductInRecipe[]
+  instructions  String?           // Texte des instructions de la recette (optionnel)
+  time          Int?              // Temps de préparation en minutes (optionnel)
+  difficulty    Int?              // Niveau de difficulté de la recette (optionnel)
+  tags          String[]          // Liste des tags associés à la recette
+  category      Category?         @relation(fields: [categoryId], references: [id]) // Relation avec la table Category
+  categoryId    Int?              // Clé étrangère vers la table Category
+}
+
+model Category {
+  id          Int     @id @default(autoincrement())
+  name        String
+  recipes     Recipe[]           // Relation avec les recettes associées à cette catégorie
+}
+
+model ProductInRecipe {
+  id        Int     @id @default(autoincrement())
+  recipe    Recipe  @relation(fields: [recipeId], references: [id])
+  recipeId  Int
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  quantity  Int
+}
