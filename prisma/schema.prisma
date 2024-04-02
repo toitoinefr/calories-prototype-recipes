@@ -16,26 +16,64 @@ datasource db {
 model Product {
   id              Int               @id @default(autoincrement())
   name            String
-  calories        Int
+  //imageUrl      String relation AWS S3
   ProductInRecipe ProductInRecipe[]
+  category        ProductCategory?  @relation(fields: [categoryId], references: [id])
+  categoryId      Int?
+  calories        Int
+  fat             Int?
+  fatSaturated    Int?
+  carbohydrates   Int?
+  sugar           Int?
+  fibres          Int?
+  salt            Int?
+}
+
+model RecipeStatus {
+  id      Int      @id @default(autoincrement())
+  name    String   @unique
+  recipes Recipe[]
+}
+
+model ProductCategory {
+  id       Int       @id @default(autoincrement())
+  name     String
+  products Product[]
 }
 
 model Recipe {
   id            Int               @id @default(autoincrement())
   name          String
+  description   String            @db.VarChar(255)
+  //author      User @relation(User)
+  steps         Step[]
+  //imageUrl    String relation AWS S3
+  duration      Int?
+  difficulty    Int?
+  totalCalories Int?
+  totalProteins Int?
+  status        RecipeStatus      @relation(fields: [statusId], references: [id])
+  statusId      Int
   products      ProductInRecipe[]
-  instructions  String?           // Texte des instructions de la recette (optionnel)
-  time          Int?              // Temps de préparation en minutes (optionnel)
-  difficulty    Int?              // Niveau de difficulté de la recette (optionnel)
-  tags          String[]          // Liste des tags associés à la recette
-  category      Category?         @relation(fields: [categoryId], references: [id]) // Relation avec la table Category
-  categoryId    Int?              // Clé étrangère vers la table Category
+  tags          String[]
+  category      RecipeCategory?   @relation(fields: [categoryId], references: [id])
+  categoryId    Int?
+  slug          String?
+  link          String?
 }
 
-model Category {
-  id          Int     @id @default(autoincrement())
-  name        String
-  recipes     Recipe[]           // Relation avec les recettes associées à cette catégorie
+model Step {
+  id       Int    @id @default(autoincrement())
+  recipe   Recipe @relation(fields: [recipeId], references: [id])
+  recipeId Int
+  order    Int    // L'ordre de cette étape dans la recette
+  content  String // Le contenu de l'étape de la recette
+}
+
+model RecipeCategory {
+  id      Int      @id @default(autoincrement())
+  name    String
+  recipes Recipe[]
 }
 
 model ProductInRecipe {
