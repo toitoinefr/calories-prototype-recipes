@@ -20,6 +20,7 @@ export default function Header() {
                   <Button asChild variant={'outline'}><Link href="/products">Produits</Link></Button>
                   <Button asChild variant={'outline'}><Link href="/categories">Catégories</Link></Button>
                   <Button asChild variant={'outline'}><Link href="/recipes">Recettes</Link></Button>
+                  <Button asChild variant={'outline'}><Link href="/prototype">Prototype V0.1</Link></Button>
               </div>
             </div>
           </div>
