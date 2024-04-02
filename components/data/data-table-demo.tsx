@@ -35,6 +35,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Product } from "@/lib/types"
+
 
 const data: Payment[] = [
   {
@@ -168,13 +170,30 @@ export const columns: ColumnDef<Payment>[] = [
 ]
 
 export function DataTableDemo() {
+  const [products, setProducts] = React.useState<Product[]>([])
+  const [loadingProducts, setLoadingProducts] = React.useState<boolean>(true)
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
+
+  React.useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('/api/products');
+        if(!response.ok) {
+          throw new Error('Erreur lors du chargement des produits')
+        }
+        const productsData = await response.json();
+        setProducts(productsData.products);
+      } catch (e) {
+        console.error('Erreur lors du chargement des produits :', e)
+      } finally {
+        setLoadingProducts(false)
+      }
+    }
+    fetchProducts();
+  }, [])
 
   const table = useReactTable({
     data,

@@ -1,4 +1,4 @@
-import { DataTableDemo } from '@/components/data/data-table'
+import { DataTableDemo } from '@/components/data/data-table-demo'
 import React from 'react'
 
 export default function ProductsPage() {
